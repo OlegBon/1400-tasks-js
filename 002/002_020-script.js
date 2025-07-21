@@ -49,23 +49,29 @@ class FormulaError extends Error {
 let nmbr = []; // Масив для збереження введених чисел
 let arrIn = ["e", "f", "g", "h"]; // Масив назв змінних для виводу
 
-// a = [e + (f / 2)] / 3
-function calculateA(e, f) {
-  return ((e + f / 2) / 3).toFixed(2);
-}
-
-// b = |h^2 - g|
-function calculateB(h, g) {
-  return Math.abs(h ** 2 - g).toFixed(2);
-}
-
-// c =sqrt((g - h)^2 - 3 * sin(e))
-function calculateC(e, f, g) {
-  let value = (g - f) ** 2 - 3 * Math.sin(e);
+// a = sqrt(|e - 3 / f|^3 + g)
+function calculateA(e, f, g) {
+  if (f === 0) {
+    throw FormulaError.divisionByZero(arrIn[1], f);
+  }
+  let value = Math.abs(e - 3 / f) ** 3 + g;
   if (value < 0) {
     throw FormulaError.negativeRoot(arrIn[0], value);
   }
   return Math.sqrt(value).toFixed(2);
+}
+
+// b = sin(e) + cos^2(h)
+function calculateB(e, h) {
+  return (Math.sin(e) + Math.cos(h) ** 2).toFixed(2);
+}
+
+// c = (33 * g) / (e * f - 3)
+function calculateC(e, f, g) {
+  if (e * f - 3 === 0) {
+    throw FormulaError.divisionByZero(arrIn[0], e * f - 3);
+  }
+  return ((33 * g) / (e * f - 3)).toFixed(2);
 }
 
 button.addEventListener("click", function () {
@@ -80,9 +86,9 @@ button.addEventListener("click", function () {
 
   if (nmbr.length === 4) {
     try {
-      let a = calculateA(nmbr[0], nmbr[1]); // e, f
-      let b = calculateB(nmbr[3], nmbr[2]); // h, g ← це важливо!
-      let c = calculateC(nmbr[0], nmbr[1], nmbr[2]); // e, f, g
+      let a = calculateA(nmbr[0], nmbr[1], nmbr[2]);
+      let b = calculateB(nmbr[0], nmbr[3]);
+      let c = calculateC(nmbr[0], nmbr[1], nmbr[2]);
       outputParagraph.textContent = `Введено e = ${nmbr[0]}, f = ${nmbr[1]}, g = ${nmbr[2]}, h = ${nmbr[3]}. Результати: a = ${a}, b = ${b}, c = ${c}`;
     } catch (error) {
       if (error instanceof FormulaError) {
