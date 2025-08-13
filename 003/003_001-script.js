@@ -60,7 +60,8 @@ function calcMetrs(santimeters) {
   if (santimeters < 0) {
     throw FormulaError.invalidValue("santimeters", santimeters);
   }
-  return Math.floor(santimeters / 100); // Повні метри
+  // return Math.floor(santimeters / 100); // Повні метри - заокруглення в меншу сторону
+  return Math.trunc(santimeters / 100); // Повні метри - отбрасуємо дробну частину
 }
 
 function handlerClick() {
